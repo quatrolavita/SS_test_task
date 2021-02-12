@@ -7,8 +7,7 @@ from .exceptions import TimeOverlapError, InvalidTimeError
 @receiver(pre_save, sender=Alias)
 def validate_alias(sender, instance, **kwargs):
 
-    print('some massage')
-    if instance.start > instance.end:
+    if instance.end is not None and instance.start > instance.end:
         raise InvalidTimeError
 
     alias_for_target = Alias.objects.filter(target=instance.target)
@@ -62,10 +61,3 @@ def validate_alias(sender, instance, **kwargs):
 
         if similar_obj.end <= instance.start:
             return
-
-
-
-
-
-
-

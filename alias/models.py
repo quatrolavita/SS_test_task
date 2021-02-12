@@ -1,5 +1,6 @@
 from djongo import models
 from django.utils import timezone
+from .managers import AliasManager
 
 
 class Alias(models.Model):
@@ -8,3 +9,5 @@ class Alias(models.Model):
     target = models.SlugField(max_length=24, blank=False)
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=None)
+
+    objects = AliasManager()
