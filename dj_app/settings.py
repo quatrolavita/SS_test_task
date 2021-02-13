@@ -66,12 +66,11 @@ WSGI_APPLICATION = 'dj_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'alias_db',
-        'CLIENT': {
-            'host': os.getenv('DB_HOST') or 'localhost',
-            'port': 27017,
-        }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME') or 'alias_db',
+        'USER': os.getenv('DB_USER') or 'user',
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('DB_HOST') or 'localhost',
     }
 }
 

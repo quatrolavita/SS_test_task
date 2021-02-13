@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Population db process...")
-        for i in range(10):
+        for i in range(3):
             Alias.objects.create(alias=fake.name()[:10],
                                  target=fake.text()[:24],
                                  end=timezone.now() + dt.timedelta(days=i))

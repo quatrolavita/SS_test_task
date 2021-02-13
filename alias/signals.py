@@ -35,29 +35,37 @@ def validate_alias(sender, instance, **kwargs):
                 raise TimeOverlapError
 
             else:
-                return
+                continue
+
+        return
 
     for similar_obj in similar_alias:
 
         if similar_obj.end is None:
 
-            if similar_obj.start >= instance.start or \
-                    instance.end:
+            if similar_obj.start >= instance.start:
                 raise TimeOverlapError
 
             else:
-                return
+                continue
 
-        if similar_obj.start > instance.start and \
-                instance.start < similar_obj.end:
+        if similar_obj.start > instance.end:
+            continue
+
+        if similar_obj.end < instance.start:
+            continue
+
+        if similar_obj.end > instance.start > similar_obj.start:
+
             raise TimeOverlapError
 
-        if similar_obj.start > instance.end and \
-                instance.end < similar_obj.end:
+        if similar_obj.end > instance.end > similar_obj.start:
+
             raise TimeOverlapError
 
-        if instance.end < similar_obj.start:
-            return
+        if instance.start < similar_obj.start < instance.end:
+            raise TimeOverlapError
 
-        if similar_obj.end <= instance.start:
-            return
+        if instance.start == similar_obj.start:
+            raise TimeOverlapError
+
