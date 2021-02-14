@@ -2,10 +2,11 @@ from datetime import datetime
 import pytz
 from django.test import TestCase
 from alias.models import Alias
-from alias.exceptions import TimeOverlapError, InvalidTimeError
+from alias.exceptions import AliasTimeOverlapError, AliasInvalidTimeError
 
 
 class AliasModelTest(TestCase):
+    """This class contain all methods for Alias model"""
 
     def setUp(self):
         """Set up data before each test"""
@@ -20,6 +21,7 @@ class AliasModelTest(TestCase):
                              start=pytz.utc.localize(datetime.strptime('2020-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
     def test_create_alias_before_similar(self):
+        """This method test behavior when created new alias obj with time line before existing similar alias"""
 
         _from = pytz.utc.localize(
                                  datetime.strptime('2018-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f"))
@@ -35,6 +37,7 @@ class AliasModelTest(TestCase):
         self.assertEqual(to, alias_obj.end)
 
     def test_create_alias_after_similar(self):
+        """This method test behavior when created new alias obj with time line after existing similar alias"""
 
         _from = pytz.utc.localize(
                                  datetime.strptime('2022-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f"))
@@ -50,8 +53,9 @@ class AliasModelTest(TestCase):
         self.assertEqual(to, alias_obj.end)
 
     def test_create_alias_with_overlap_err(self):
+        """This method test behavior when created new alias obj with time overlapping with different cases"""
 
-        with self.assertRaises(TimeOverlapError) as err:
+        with self.assertRaises(AliasTimeOverlapError) as err:
             Alias.objects.create(alias='alias1',
                                  target='target1',
                                  start=pytz.utc.localize(
@@ -59,7 +63,7 @@ class AliasModelTest(TestCase):
                                  end=pytz.utc.localize(
                                      datetime.strptime('2022-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
-        with self.assertRaises(TimeOverlapError) as err:
+        with self.assertRaises(AliasTimeOverlapError) as err:
             Alias.objects.create(alias='alias1',
                                  target='target1',
                                  start=pytz.utc.localize(
@@ -67,7 +71,7 @@ class AliasModelTest(TestCase):
                                  end=pytz.utc.localize(
                                      datetime.strptime('2022-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
-        with self.assertRaises(TimeOverlapError) as err:
+        with self.assertRaises(AliasTimeOverlapError) as err:
             Alias.objects.create(alias='alias1',
                                  target='target1',
                                  start=pytz.utc.localize(
@@ -75,7 +79,7 @@ class AliasModelTest(TestCase):
                                  end=pytz.utc.localize(
                                      datetime.strptime('2021-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
-        with self.assertRaises(TimeOverlapError) as err:
+        with self.assertRaises(AliasTimeOverlapError) as err:
             Alias.objects.create(alias='alias2',
                                  target='target2',
                                  start=pytz.utc.localize(
@@ -83,7 +87,7 @@ class AliasModelTest(TestCase):
                                  end=pytz.utc.localize(
                                      datetime.strptime('2021-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
-        with self.assertRaises(TimeOverlapError) as err:
+        with self.assertRaises(AliasTimeOverlapError) as err:
             Alias.objects.create(alias='alias1',
                                  target='target1',
                                  start=pytz.utc.localize(
@@ -92,8 +96,9 @@ class AliasModelTest(TestCase):
                                      datetime.strptime('2024-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
     def test_create_alias_with_invalid_time_err(self):
+        """This method test behavior when created new alias obj with start in front of end"""
 
-        with self.assertRaises(InvalidTimeError) as err:
+        with self.assertRaises(AliasInvalidTimeError) as err:
             Alias.objects.create(alias='alias1',
                                  target='target1',
                                  start=pytz.utc.localize(
@@ -102,6 +107,7 @@ class AliasModelTest(TestCase):
                                      datetime.strptime('2020-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f")))
 
     def test_get_aliases(self):
+        """This method test get query set with filtered alias objects method from Alias Manager"""
 
         _from = pytz.utc.localize(
             datetime.strptime('2020-05-01 05:23:47.657264', "%Y-%m-%d %H:%M:%S.%f"))
@@ -116,6 +122,7 @@ class AliasModelTest(TestCase):
         self.assertEqual(alias_qs[0].alias, 'alias1')
 
     def test_aliases_replace(self):
+        """This method test custom manager method thar replace alias from existing alias or creates brand new"""
 
         existing_alias = 'alias1'
         new_alias_value = 'new_alias1'

@@ -4,8 +4,10 @@ from alias.models import Alias
 
 
 class CommandTest(TestCase):
+    """This class contain all tests for custom user commands"""
 
     def test_population_db(self):
+        """Testing population db command"""
 
         call_command('populate_db')
         alias = Alias.objects.all()

@@ -4,15 +4,21 @@ from django.utils import timezone
 from django.core.management.base import BaseCommand
 from alias.models import Alias
 
-
-fake = Faker()
-
-
 class Command(BaseCommand):
-    """This command will populate db with fake data"""
+    """This class will enable command, that will populate db with fake data"""
 
     def handle(self, *args, **options):
+        """This method will handle all job for command
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            None
+        """
         self.stdout.write("Population db process...")
+        fake = Faker()
         for i in range(3):
             Alias.objects.create(alias=fake.name()[:10],
                                  target=fake.text()[:24],

@@ -1,14 +1,32 @@
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from .models import Alias
-from .exceptions import TimeOverlapError, InvalidTimeError
+from .exceptions import AliasTimeOverlapError, AliasInvalidTimeError
 
 
 @receiver(pre_save, sender=Alias)
-def validate_alias(sender, instance, **kwargs):
+def alias_time_validation(sender, instance, **kwargs):
+    """This method validate time measurement with new Alias obj
+
+    Params:
+        sender (class): The model class.
+        instance (obj): The actual instance being saved.
+        **kwargs: Arbitrary keyword arguments.
+
+    Returns:
+        None: Returns when there is no time overlapping
+
+    Raises:
+
+        AliasTimeOverlapError: Occur then exists time overlapping with Alias obj in db
+
+        InvalidTimeError: Occur when attribute start in Alias object in front of attribute end
+
+
+    """
 
     if instance.end is not None and instance.start > instance.end:
-        raise InvalidTimeError
+        raise AliasInvalidTimeError
 
     alias_for_target = Alias.objects.filter(target=instance.target)
 
@@ -25,14 +43,14 @@ def validate_alias(sender, instance, **kwargs):
         for similar_obj in similar_alias:
 
             if similar_obj.end is None:
-                raise TimeOverlapError
+                raise AliasTimeOverlapError
 
             if (similar_obj.start >= instance.start) and \
                     (instance.start < similar_obj.end):
-                raise TimeOverlapError
+                raise AliasTimeOverlapError
 
             if instance.start >= similar_obj.start:
-                raise TimeOverlapError
+                raise AliasTimeOverlapError
 
             else:
                 continue
@@ -44,7 +62,7 @@ def validate_alias(sender, instance, **kwargs):
         if similar_obj.end is None:
 
             if similar_obj.start >= instance.start:
-                raise TimeOverlapError
+                raise AliasTimeOverlapError
 
             else:
                 continue
@@ -57,15 +75,14 @@ def validate_alias(sender, instance, **kwargs):
 
         if similar_obj.end > instance.start > similar_obj.start:
 
-            raise TimeOverlapError
+            raise AliasTimeOverlapError
 
         if similar_obj.end > instance.end > similar_obj.start:
 
-            raise TimeOverlapError
+            raise AliasTimeOverlapError
 
         if instance.start < similar_obj.start < instance.end:
-            raise TimeOverlapError
+            raise AliasTimeOverlapError
 
         if instance.start == similar_obj.start:
-            raise TimeOverlapError
-
+            raise AliasTimeOverlapError
