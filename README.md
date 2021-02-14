@@ -35,9 +35,12 @@ export DB_PASS='password'
 
 source <bash_file_name>
 ```
-4. If you want to populate db  use `python manage.py populate_db`
-5. If you want to test app use `python manage.py test`
-6. If you what to test functionality use `python manage.py shell`
+4. Set up virtual env  `python -m venv venv`
+5. Activate venv `source venv/bin/activate`
+6. Install packages `pip install -r requirements.txt`
+7. If you want to populate db  use `python manage.py populate_db`
+8. If you want to test app use `python manage.py test`
+9. If you what to test functionality use `python manage.py shell`
 Some example of django shell session:
 ```
 >>> from alias.models import Alias
