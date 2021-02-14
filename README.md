@@ -71,7 +71,7 @@ sudo docker-compose down
 sudo docker-compose up
 ```
 
-#HOW TO TEST WITH DOCKER?
+# HOW TO TEST WITH DOCKER?
 
 1. Clone git repo 
 
